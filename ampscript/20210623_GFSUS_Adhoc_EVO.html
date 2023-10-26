@@ -1,0 +1,527 @@
+%%[ /* 20210623_GFSUS_Adhoc_EVO */ 
+
+if (Empty(@senddate)) then
+  ContentBlockByName("Shared Content\_CROSSBRAND\Snippets\sendDateConversion")
+ endif
+
+
+/* Shop-by-Size  */
+if IndexOf(@adhoc_evo_scheme, "GFSUSSHOPBYSIZE") > 0 then
+ var @adhoc_evo_append
+
+ if Empty(@adhoc5) then set @adhoc5 = [adhoc5] endif
+
+ if @adhoc5 == "WMN" or @adhoc5 == "MAT" then
+  set @adhoc_evo_append = "WOMEN"
+ elseif @adhoc5 == "KIDB" or @adhoc5 == "KIDG" or @adhoc5 == "TODB" or @adhoc5 == "TODG" or @adhoc5 == "BBYB" or @adhoc5 == "BBYG" then
+  set @adhoc_evo_append= "KTB"
+ elseif @adhoc5 == "MEN" then
+  set @adhoc_evo_append= "MEN"
+ else
+  set @adhoc_evo_append = "ROF"
+ endif
+
+ set @EMAIL_VERSION_OVERRIDE = Concat(@email_version, @adhoc_evo_append)
+ set @EMAIL_VERSION = @EMAIL_VERSION_OVERRIDE
+
+endif
+
+
+ 
+/* PZPod P7: 9/20-10/11 */
+set @email_senddate = Concat(@monthNum, "/", @dayNum, "/", @yearNum)
+if @email_senddate >= "09/20/2021" AND @email_senddate <= "10/11/2021" then
+    var @adhoc_evo_append, @ascProductIDs, @ascRS, @ascCount
+
+ set @ascProductIDs = Lookup("GAPF_ABANDONCART_BATCH", "PRODUCT_IDS", "EMAIL_KEY", [EMAIL_KEY])
+    
+ if NOT Empty(@ascProductIDs) then
+
+        set @segment_splits = "33/33/34"
+        set @segment_same = true
+        set @segment_buckets = ""
+        ContentBlockByKey("Realtime_Segmentation_Logic")
+
+        if @segment_num == 1 then set @adhoc_evo_append = "PZQ4TEST1"
+        elseif @segment_num == 2 then set @adhoc_evo_append = "PZQ4TEST2"
+        else set @adhoc_evo_append = "PZQ4CTRL" endif
+
+        /* Format PIDs */
+        set @ascProductIDs = ReplaceList(@ascProductIDs, "", "GAPFS:", " ")
+        set @ascRS = BuildRowSetFromString(@ascProductIDs, ",")
+        set @ascCount = RowCount(@ascRS)
+
+        /* Only pull first 9 digits of PIDs */
+        for @i = 1 to @ascCount do           
+           set @ascProductIDsFormatted = Concat(@ascProductIDsFormatted, Substring(Field(Row(@ascRS, @i), 1), 1, 9))
+
+     if (Add(@i, 1) <= @ascCount) then
+              set @ascProductIDsFormatted = Concat(@ascProductIDsFormatted, ",")
+     endif
+        next @i
+
+        set @EMAIL_VERSION_OVERRIDE = Concat(@EMAIL_VERSION, @adhoc_evo_append)
+        set @EMAIL_VERSION = @EMAIL_VERSION_OVERRIDE    
+   endif
+endif
+
+
+
+/* Legacy rewards top banner 1/5-1/31 */
+set @email_senddate = Concat(@monthNum, "/", @dayNum, "/", @yearNum)
+set @test_date_range = DateDiff("01/05/2022", @email_senddate, "D")
+
+if @test_date_range >= 0 AND @test_date_range <= 26 then
+    var @adhoc_evo_append, @legacy_rewards_total
+    if Empty(@cust_key) then set @cust_key = [cust_key] endif
+
+    set @legacy_rewards_total = Lookup("ent.MTL_Rewards_DE", "total_reward", "cust_key", @cust_key)
+
+    if NOT Empty(@legacy_rewards_total) AND @legacy_rewards_total > 0 then
+        set @displayILPStatusWidget = "n"
+        set @adhoc_evo_append = "PZPX8"
+        set @EMAIL_VERSION_OVERRIDE = Concat(@EMAIL_VERSION, @adhoc_evo_append)
+        set @EMAIL_VERSION = @EMAIL_VERSION_OVERRIDE   
+    endif
+endif
+ 
+ 
+ 
+/* GFSUS RTS EVO Clearance Linking Test 1/11-1/13 */
+
+if IndexOf(@adhoc_evo_scheme, "GFSUS_EVO_CLEARANCE") > 0 then
+    
+  /* RTS 1 */
+  var @adhoc_evo_append
+  if Empty(@adhoc7) then set @adhoc7 = [adhoc7] endif
+
+  if @adhoc7 == "GFSUSICONENTHUSIAST" or @adhoc7 == "GFSUSCORE" then
+     set @segment_splits = "50/50"
+     set @rts_name = "CLXLOYALTY"
+     ContentBlockByKey("RTS_Cust_Key") 
+
+     if @segment_num == 1 then 
+      set @adhoc_evo_append = "CLXLOYALTYTEST" 
+     else 
+      set @adhoc_evo_append = "CLXLOYALTYCTRL" 
+     endif
+ 
+     set @EMAIL_VERSION_OVERRIDE = Concat(@EMAIL_VERSION, @adhoc_evo_append)
+     set @EMAIL_VERSION = @EMAIL_VERSION_OVERRIDE 
+  
+else
+
+  /* RTS 2  */
+     set @segment_splits = "50/50"
+     set @rts_name = "CLX"
+     ContentBlockByKey("RTS_Cust_Key") 
+
+     if @segment_num == 1 then 
+      set @adhoc_evo_append = "CLXTEST" 
+     else 
+      set @adhoc_evo_append = "CLXCTRL" 
+     endif
+ 
+     set @EMAIL_VERSION_OVERRIDE = Concat(@EMAIL_VERSION, @adhoc_evo_append)
+     set @EMAIL_VERSION = @EMAIL_VERSION_OVERRIDE  
+ 
+  endif
+
+endif 
+ 
+/* GFSUS RTS EVO Shop Linking Test (2/16-2/22) */
+
+/* RTS 1  */
+
+set @email_senddate = Concat(@yearNum, "-", @monthNum, "-", @dayNum)
+if @email_senddate >= "2022-02-16" AND @email_senddate <= "2022-02-22" then
+   var @adhoc_evo_append
+   set @segment_splits = "50/50"
+   set @rts_name = "SHOPSALE"
+   ContentBlockByKey("RTS_Cust_Key") 
+
+   if @segment_num == 1 then 
+     set @adhoc_evo_append = "TESTALL" 
+   else 
+     set @adhoc_evo_append = "CTRLSALE" 
+   endif
+
+   set @EMAIL_VERSION_OVERRIDE = Concat(@EMAIL_VERSION, @adhoc_evo_append)
+   set @EMAIL_VERSION = @EMAIL_VERSION_OVERRIDE                    
+endif
+
+
+/* GFSUS_EVO_CTA_TEST (4/6 - 4/12) */
+if IndexOf(@adhoc_evo_scheme, "GFSUS_EVO_CTA_TEST") > 0 then
+   var @adhoc_evo_append
+   set @segment_splits = "50/50"
+   set @rts_name = "GFSUS_EVO_CTA_TEST"
+   ContentBlockByKey("RTS_Cust_Key") 
+
+   if @segment_num == 1 then set @adhoc_evo_append = "TESTMAIN" 
+   else set @adhoc_evo_append = "CTRLBANNER" endif
+
+   set @EMAIL_VERSION_OVERRIDE = Concat(@EMAIL_VERSION, @adhoc_evo_append)
+   set @EMAIL_VERSION = @EMAIL_VERSION_OVERRIDE   
+endif
+ 
+  
+
+/* GFSUS POD 2D5  (5/22/2022 - 6/12/2022) */
+set @email_senddate = Concat(@yearNum, "-", @monthNum, "-", @dayNum)
+
+if (@email_senddate >= "2022-05-22" AND @email_senddate <= "2022-06-12") or 
+   IndexOf(@adhoc_evo_scheme, "PZP2D5") > 0 then 
+ 
+   var @adhoc_evo_append
+   
+   if Empty(@adhoc13) then set @adhoc13 = [adhoc13] endif
+   set @adhoc_evo_append = @adhoc13
+   
+   if @adhoc13 == "PZP2D5CTRL" then
+   set @hideAttrition = "n"
+   else
+   set @hideAttrition = "y"
+   endif
+   
+   set @EMAIL_VERSION_OVERRIDE = Concat(@email_version, @adhoc_evo_append)
+   set @EMAIL_VERSION = @EMAIL_VERSION_OVERRIDE                            
+endif
+
+
+/* POD 2E4 - 3rd Party Ads (4/12-4/22) */
+if IndexOf(@adhoc_evo_scheme, "PZP2E4") > 0 then
+   var @adhoc_evo_append
+   set @segment_splits = "33/33/34"
+   set @rts_name = "PZP2E4"
+   ContentBlockByKey("RTS_Cust_Key") 
+
+   if @segment_num == 1 then set @adhoc_evo_append = "PZP2E4TEST1"
+   elseif @segment_num == 2 then set @adhoc_evo_append = "PZP2E4TEST2" 
+   else set @adhoc_evo_append = "PZP2E4CTRL" endif
+
+   set @EMAIL_VERSION_OVERRIDE = Concat(@EMAIL_VERSION, @adhoc_evo_append)
+   set @EMAIL_VERSION = @EMAIL_VERSION_OVERRIDE   
+endif
+
+
+/*  RTS/EVO Subject Line Test (5/2-5/9) */
+if IndexOf(@adhoc_evo_scheme, "GFSUS_SPLIT_FF") > 0 then 
+   var @adhoc_evo_append
+
+   /* Script on runs once */
+      set @segment_splits = "50/50"
+      set @rts_name = "GFSUS_SPLIT_FF"
+      ContentBlockByKey("RTS_Cust_Key")
+            
+      if @segment_num == 1 then set @adhoc_evo_append = "TESTSL"
+      else set @adhoc_evo_append = "CTRLSL" endif
+
+      if NOT Empty(@adhoc_evo_append) then
+         set @EMAIL_VERSION_OVERRIDE = Concat(@EMAIL_VERSION, @adhoc_evo_append)
+         set @EMAIL_VERSION = @EMAIL_VERSION_OVERRIDE  
+    endif
+endif
+                
+                
+if IndexOf(@adhoc_evo_scheme, "GFSUS_SPLIT_LOY") > 0 then 
+   var @adhoc_evo_append
+
+   /* Script on runs once */
+   ContentBlockByKey("20220321_ILP_Data_Lookup")
+
+   if @is_ilp_member == true then
+      set @segment_splits = "50/50"
+      set @rts_name = "GFSUS_SPLIT_LOY"
+      ContentBlockByKey("RTS_Cust_Key")
+            
+      if @segment_num == 1 then set @adhoc_evo_append = "TESTSL"
+      else set @adhoc_evo_append = "CTRLSL" endif
+
+      if NOT Empty(@adhoc_evo_append) then
+         set @EMAIL_VERSION_OVERRIDE = Concat(@EMAIL_VERSION, @adhoc_evo_append)
+         set @EMAIL_VERSION = @EMAIL_VERSION_OVERRIDE  
+      endif
+   endif
+endif
+ 
+ 
+/*  GFSUS RTS/EVO Door Busters Creative Test (5/18-5/24) */
+if IndexOf(@adhoc_evo_scheme, "GFSUS_RTS_EVO_DB_CNC") > 0 then 
+  var @adhoc_evo_append
+
+  /* Script on runs once */
+  ContentBlockByKey("20220321_ILP_Data_Lookup")
+ 
+ if @is_ilp_card == true then         
+     set @segment_splits = "50/50"
+    set @rts_name = "GFSUS_RTS_EVO_DB_CNC_1"
+    ContentBlockByKey("RTS_Cust_Key")
+
+    if @segment_num == 1 then set @adhoc_evo_append = "GFSUSCARDDBTEST"
+    else set @adhoc_evo_append = "GFSUSCARDDBCTRL" endif
+ else
+
+    set @segment_splits = "50/50"
+    set @rts_name = "GFSUS_RTS_EVO_DB_CNC_2"
+    ContentBlockByKey("RTS_Cust_Key")
+ 
+    if  @segment_num == 1 then set @adhoc_evo_append = "GFSUSDBTEST" then
+    else set @adhoc_evo_append = "GFSUSDBCTRL" endif
+  endif
+
+  if NOT Empty(@adhoc_evo_append) then
+    set @EMAIL_VERSION_OVERRIDE = Concat(@EMAIL_VERSION, @adhoc_evo_append)
+    set @EMAIL_VERSION = @EMAIL_VERSION_OVERRIDE  
+  endif
+endif 
+ 
+ 
+if IndexOf(@adhoc_evo_scheme, "GFSUS_RTS_EVO_DB_LOY_ROF") > 0 then 
+  var @adhoc_evo_append
+
+  /* Script on runs once */
+  ContentBlockByKey("20220321_ILP_Data_Lookup")
+ 
+  if @is_ilp_member == true then         
+    set @segment_splits = "50/50"
+    set @rts_name = "GFSUS_RTS_EVO_DB_LOY_ROF_1"
+    ContentBlockByKey("RTS_Cust_Key")
+
+    if @segment_num == 1 then set @adhoc_evo_append = "GFSUSLOYALTYDBTEST"
+    else set @adhoc_evo_append = "GFSUSLOYALTYDBCTRL" endif
+  else
+
+    set @segment_splits = "50/50"
+    set @rts_name = "GFSUS_RTS_EVO_DB_LOY_ROF_2"
+    ContentBlockByKey("RTS_Cust_Key")
+
+    if  @segment_num == 1 then set @adhoc_evo_append = "GFSUSDBTEST" then
+    else set @adhoc_evo_append = "GFSUSDBCTRL" endif
+  endif
+
+  if NOT Empty(@adhoc_evo_append) then
+    set @EMAIL_VERSION_OVERRIDE = Concat(@EMAIL_VERSION, @adhoc_evo_append)
+    set @EMAIL_VERSION = @EMAIL_VERSION_OVERRIDE  
+  endif
+endif  
+ 
+
+/*  GFSUS RTS/EVO Door Busters Creative Test (6/01-6/05) */
+if IndexOf(@adhoc_evo_scheme, "GFSUS_RTS_EVO_DB_ALL") > 0 then 
+  var @adhoc_evo_append
+
+  /* Script on runs once */
+  set @segment_splits = "50/50"
+  set @rts_name = "GFSUS_RTS_EVO_DB_ALL"
+  ContentBlockByKey("RTS_Cust_Key")
+ 
+  if  @segment_num == 1 then set @adhoc_evo_append = "DBTEST" then
+  else set @adhoc_evo_append = "DBCTRL" endif
+
+  if NOT Empty(@adhoc_evo_append) then
+    set @EMAIL_VERSION_OVERRIDE = Concat(@EMAIL_VERSION, @adhoc_evo_append)
+    set @EMAIL_VERSION = @EMAIL_VERSION_OVERRIDE  
+  endif
+endif   
+
+
+/* CP Eligible Creative Test (06/27 AM) */
+if IndexOf(@adhoc_evo_scheme, "CPTEST0627AM") > 0 then
+   var @adhoc_evo_append
+
+   if Empty(@creative_uuid_1) then set @creative_uuid_1 = AttributeValue("creative_uuid_1") endif
+   if Empty(@creative_uuid_2) then set @creative_uuid_2 = AttributeValue("creative_uuid_2") endif
+   if Empty(@creative_uuid_3) then set @creative_uuid_3 = AttributeValue("creative_uuid_3") endif
+   if Empty(@creative_uuid_4) then set @creative_uuid_4 = AttributeValue("creative_uuid_4") endif
+   if Empty(@creative_uuid_5) then set @creative_uuid_5 = AttributeValue("creative_uuid_5") endif
+   if Empty(@creative_uuid_6) then set @creative_uuid_6 = AttributeValue("creative_uuid_6") endif
+   if Empty(@creative_uuid_7) then set @creative_uuid_7 = AttributeValue("creative_uuid_7") endif
+
+   set @creative_uuids = Concat(@creative_uuid_1, @creative_uuid_2, @creative_uuid_3, @creative_uuid_4, @creative_uuid_5, @creative_uuid_6, @creative_uuid_7)
+
+   if IndexOf(@creative_uuids, "MUSLk9M") then set @adhoc_evo_append = "CTRLNA"
+   else set @adhoc_evo_append = "TESTCP" endif
+
+   set @EMAIL_VERSION_OVERRIDE = Concat(@EMAIL_VERSION, @adhoc_evo_append)
+   set @EMAIL_VERSION = @EMAIL_VERSION_OVERRIDE   
+endif  
+
+
+/*  POD 2J4 - Factory Online Only Inactive */
+set @email_senddate = Concat(@yearNum, "-", @monthNum, "-", @dayNum)
+if @email_senddate >= "2022-07-20" AND @email_senddate <= "2022-08-01" then
+  
+   var @adhoc_evo_append
+   set @displayOnlineInactive = false
+   if Empty(@adhoc15) then set @adhoc15 = [adhoc15] endif
+   if Empty(@cust_key) then set @cust_key = [cust_key] endif
+   
+   if IndexOf("PZP2J4CTRL,PZP2J4TEST1,PZP2J4TEST2", @adhoc15) > 0 then 
+      set @inactive_rs = LookupRows("20220720_GFSUS_PZPOD_2J4", "cust_key", @cust_key)
+   
+
+
+      if RowCount(@inactive_rs) > 0 then
+      set @adhoc_evo_append = @adhoc15
+   set @inactive_coupon_code = Field(Row(@inactive_rs, 1), "coupon_code")
+
+         if IndexOf("PZP2J4TEST1,PZP2J4TEST2", @adhoc15) > 0 AND NOT Empty(@inactive_coupon_code) then
+            set @displayOnlineInactive = true
+            set @hideAttrition = "y"
+         endif
+       endif
+   endif
+
+   if NOT Empty(@adhoc_evo_append) then
+      set @EMAIL_VERSION_OVERRIDE = Concat(@EMAIL_VERSION, @adhoc_evo_append)
+      set @EMAIL_VERSION = @EMAIL_VERSION_OVERRIDE  
+   endif
+endif   
+
+ 
+ 
+/* GFSUS 7/29-8/20 Tax Free Holiday 2022 */
+if IndexOf(@adhoc_evo_scheme, "2022TAXFREE") > 0 then
+   var @adhoc_evo_append
+   if Empty(@adhoc21) then set @adhoc21 = [adhoc21] endif
+    
+   if NOT Empty(@adhoc21) then 
+      set @taxfree_rs = LookupRows("Tax_Free_Holiday_Banner_Dates_2022", "state", @adhoc21)
+ 
+      if RowCount(@taxfree_rs) > 0 then
+         set @taxfree_row = Row(@taxfree_rs, 1)
+         set @taxfree_start = FormatDate(Field(@taxfree_row, "start_date"), "YYYY-MM-dd")
+         set @taxfree_end = FormatDate(Field(@taxfree_row, "end_date"), "YYYY-MM-dd")
+
+         if @email_senddate >= @taxfree_start AND @email_senddate < @taxfree_end then
+            set @adhoc_evo_append = Concat("TAXFREE", @adhoc21)
+         endif
+      endif
+   endif
+
+   if NOT Empty(@adhoc_evo_append) then
+      set @EMAIL_VERSION_OVERRIDE = Concat(@EMAIL_VERSION, @adhoc_evo_append)
+      set @EMAIL_VERSION = @EMAIL_VERSION_OVERRIDE
+   endif
+endif 
+
+
+/* PZPOD PZPLTYC1: 10/5-10/8 */
+if IndexOf(@adhoc_evo_scheme, "PZPLTYC1") > 0 then
+    var @adhoc_evo_append
+
+    /* This script only runs once */
+    ContentBlockByKey("20220531_ILP_Data_Lookup")
+
+    if @is_ilp_member == true AND @ilp_total_active_pts_rewards >=5 AND @ilp_total_active_pts_rewards <= 9 then
+      set @segment_splits = "33/33/34"
+      set @rts_name = "PZPLTYC1_5-9"
+      ContentBlockByKey("RTS_Email_Address")
+          
+      if @segment_num == 1 then set @adhoc_evo_append = "PZPLTYC1TEST1A"
+      elseif @segment_num == 2 then 
+        set @adhoc_evo_append = "PZPLTYC1TEST2A"
+        set @displayILPStatusWidget = "n"
+        set @displayILPContainer1 = "n"
+      else set @adhoc_evo_append = "PZPLTYC1CTRLA" endif
+
+    elseif @is_ilp_member == true AND @ilp_total_active_pts_rewards >= 10 then
+      set @segment_splits = "33/33/34"
+      set @rts_name = "PZPLTYC1_10"
+      ContentBlockByKey("RTS_Email_Address")
+          
+      if @segment_num == 1 then set @adhoc_evo_append = "PZPLTYC1TEST1B"
+      elseif @segment_num == 2 then 
+        set @adhoc_evo_append = "PZPLTYC1TEST2B"
+        set @displayILPStatusWidget = "n"
+        set @displayILPContainer1 = "n"
+      else set @adhoc_evo_append = "PZPLTYC1CTRLB" endif   
+    endif
+
+    if NOT Empty(@adhoc_evo_append) then
+        set @EMAIL_VERSION_OVERRIDE = Concat(@EMAIL_VERSION, @adhoc_evo_append)
+        set @EMAIL_VERSION = @EMAIL_VERSION_OVERRIDE  
+    endif 
+endif 
+
+
+/*  GFSUS CTA Bank Creative Test (Oct 2022) */
+if IndexOf(@adhoc_evo_scheme, "GFSUS_CTA_TEST_OCT2022") > 0 then 
+  var @adhoc_evo_append
+
+  set @segment_splits = "50/50"
+  set @rts_name = "GFSUS_CTA_TEST_OCT2022"
+  ContentBlockByKey("RTS_Cust_Key")
+ 
+  if  @segment_num == 1 then set @adhoc_evo_append = "CTRLBANK" then
+  else set @adhoc_evo_append = "TESTMULTIBANK" endif
+
+  if NOT Empty(@adhoc_evo_append) then
+    set @EMAIL_VERSION_OVERRIDE = Concat(@EMAIL_VERSION, @adhoc_evo_append)
+    set @EMAIL_VERSION = @EMAIL_VERSION_OVERRIDE  
+  endif
+endif   
+
+
+/*  GFSUS POD 2Q6 - Specialty Certona Logic in Factory (RTS) 12/6-12/20 */
+if IndexOf(@adhoc_evo_scheme, "PZP2Q6") > 0 then 
+  var @adhoc_evo_append
+
+  set @segment_splits = "50/50"
+  set @rts_name = "PZP2Q6"
+  ContentBlockByKey("RTS_Cust_Key")
+ 
+  if  @segment_num == 1 then set @adhoc_evo_append = "PZP2Q6CTRL" then
+  else set @adhoc_evo_append = "PZP2Q6TEST" endif
+
+  if NOT Empty(@adhoc_evo_append) then
+    set @EMAIL_VERSION_OVERRIDE = Concat(@EMAIL_VERSION, @adhoc_evo_append)
+    set @EMAIL_VERSION = @EMAIL_VERSION_OVERRIDE  
+  endif
+endif   
+
+	
+/*  PZ Pod 2J5 - Factory New Customer Second Purchase Persistent Email Banner (12/7 launch) */
+
+	var @adhoc_evo_append
+	set @segment_splits = "25/25/25/25"
+	set @rts_name = "PZP2J5"
+	ContentBlockByKey("RTS_Cust_Key")
+	
+	if Empty(@EMAIL_ADDRESS) then set @EMAIL_ADDRESS = [email_address] endif
+	set @pzn2d5_em = LookupRows("GPUSO_2ndPurch_Emailable_BannerLookup", "EMAIL_ADDRESS", @EMAIL_ADDRESS)
+	set @pzn2d5_ev = LookupRows("GPUSO_2ndPurch_Emailable_BannerLookup", "EMAIL_VERSION", @EMAIL_VERSION)											set @pzn2d5_rs = LookupRows("2ndPurch GPUSO_2ndPurch_Emailable_FullHistory", "EMAIL_ADDRESS", @email_address)
+
+
+	if RowCount(@pzn2d5_rs) > 0 then
+		set @pzn2d5_rs_row = Row(@pzn2d5_rs, 1)
+		set @pzn2d5_coupon_code = Field(@pzn2d5_rs_row, "Coupon_Code")
+	endif								 
+
+	if @segment_num == 1 then 									 
+		if RowCount(@pzn2d5_em) > 0 and indexOf(@pzn2d5_ev, "PZP2J5TEST1") > 0 then
+				set @pzn2d5_show = false
+				set @adhoc_evo_append = "PZP2J5TEST1A"
+			endif
+		endif	
+	elseif @segment_num == 2 then 
+		if RowCount(@pzn2d5_em) > 0 and indexOf(@pzn2d5_ev, "PZP2J5TEST2") > 0 then
+				set @adhoc_evo_append = "PZP2J5TEST2A"
+			endif
+		endif
+	elseif @segment_num == 3 then 
+		if RowCount(@pzn2d5_em) > 0 and indexOf(@pzn2d5_ev, "PZP2J5TEST3") > 0 then
+				set @adhoc_evo_append = "PZP2J5TEST3A"
+			endif
+		endif
+	else
+
+
+if NOT Empty(@adhoc_evo_append) then
+set @EMAIL_VERSION_OVERRIDE = Concat(@EMAIL_VERSION, @adhoc_evo_append)
+set @EMAIL_VERSION = @EMAIL_VERSION_OVERRIDE  
+endif
+
+endif
+]%%

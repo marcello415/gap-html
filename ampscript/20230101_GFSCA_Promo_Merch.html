@@ -1,0 +1,133 @@
+%%[/* 20230101_GFSCA_Promo_Merch */
+
+/* Defines basic omniture logic and the sendate logic - do not move or remove the call to it */
+%%= ContentBlockByName("Shared Content\_GLOBAL\Snippets\sendDateConversion") =%%
+
+
+/* Set Language Logic Here (English is the defualt fallback) */
+SET @EMAIL_VERSION = AttributeValue("EMAIL_VERSION")
+SET @ADHOC25 = [ADHOC25]
+IF @ADHOC25 == "GFSCANQUE" THEN
+  SET @emailLang  = "French"
+  SET @locale   = "fr_CA"
+  SET @language = "fr"
+ELSE
+  SET @emailLang  = "English"
+  SET @locale   = "en_CA"
+  SET @language = "en"
+ENDIF
+
+/* Hide Store Locator Toggle */
+VAR @HideStoreLocator
+SET @HideStoreLocator = "N"   
+
+/* ************set code and value variables************ */
+if @language == "en" then
+	set @subjectLine = "🎉 Celebrate with styles up to 70% off (the Great Gap Sale's still on)"
+	set @preheader = "BTW, outerwear and jeans are 40% off."
+else 
+	set @subjectLine = "🎉 Célébrez avec des modèles jusqu’à 70 % de rabais (les super soldes Gap sont en cours)"
+	set @preheader = "Les vêtements d’extérieur et les jeans sont à 50 % de rabais."
+endif 
+
+
+SET @ENG_BlurbLine = @preheader /* this is the PH / TD */
+SET @Legal = ""
+SET @textSocialBlock = "YES" /* facebook Toggle */
+SET @blurbVAWP = "YES" /* removes PH /TD line BR entirely (not just empty) */
+SET @VIEW_WP = "YES" /* removes View as Web Page */
+SET @EV_locale = @emailLang
+SET @omniture = Concat("EV=", @EMAIL_VERSION, @senddate, "&DI=", EMAIL_KEY, "&CD=", CARD_TYPE, "_", CUST_STATUS, "&ET_JOB_ID=",jobid, "&CAMPAIGN_ID=",@campaign_id)
+
+/* ************static email content************ */
+SET @MAIN_LINK  = Concat("https://www.gapcanada.ca/stores?locale=", @locale, "&", @omniture)
+SET @BRFS_LINK  = Concat("http://bananarepublic.gapcanada.ca/browse/info.do?cid=57501&locale=", @locale, "&", @omniture)
+SET @STLP   = "http://pages.email.gapinc.com/page.aspx?QS=773ed3059447707d3edf1da9db4c2f4a37dbe031952cfb38b59c299187a09b18"
+SET @STC_LINK   = @STLP
+/* ************text email content************ */
+
+/*
+%%=ContentBlockByName("Shared Content\GPCAO\PlainText\20180319_GFSCAN_TXT_Email")=%%
+*/
+
+]%%
+
+<!-- RegionStart[ name:"Share Email",    
+     title:"%%=v(@ENG_SubjLine)=%%", 
+     description:"%%=v(@ENG_SubjLine)=%%",    
+     csskey:"sharethisnobranding"] -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>%%=v(@subjectline)=%%</title>
+%%= ContentBlockByKey("20210515_Global_CSS") =%%  
+</head>
+<body style="-webkit-text-size-adjust:none; -ms-text-size-adjust:none; margin:0px;">
+
+  <!-- Begin container and wrapper tables -->
+  <table border="0" cellpadding="0" cellspacing="0" align="center" bgcolor="#FFFFFF" id="backgroundTable">
+    <tr>
+      <td>
+        <table border="0" cellpadding="0" cellspacing="0" width="640" align="center" class="wrapper">
+          <tr>
+            <td align="center">
+              %%=ContentBlockByKey("20220919_GFSCA_Header")=%%
+              <div style="display:none; max-height: 0px;overflow: hidden;font-size:0px;line-height:0px;">
+                <custom name="opencounter" type="tracking">
+              </div>
+            </td>
+          </tr>
+          <!-- end header begin content -->
+
+          <tr>
+            <td align="center">
+              <table border="0" cellpadding="0" cellspacing="0" width="640" class="wrapper">
+           
+                <tr>
+                  <td style="padding-bottom: 44px" class="between">
+                    %%= ContentBlockByName("Content Builder\Campaigns\2022\12_December\20221226\Contents\20221226_GFSCA_Great_Gap_Sale_Up_to_70_Off") =%%
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding-bottom: 44px" class="between">
+                     %%= ContentBlockByName("Content Builder\Campaigns\2022\12_December\20221226\Contents\20221226_GFSCA_Boxing_Day_26_off_75") =%%
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding-bottom: 44px" class="between">
+                    %%= ContentBlockByName("Content Builder\Campaigns\2023\01_January\20230101\Contents\20230101_GFSCA_Merch") =%%
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding-bottom: 44px" class="between">
+               		%%= ContentBlockByName("Content Builder\Campaigns\2022\12_December\20221226\Contents\20221226_GFSCA_40_off_jeans_and_outerwearLOY_2x_points") =%%
+                  </td>
+                </tr>
+
+        </table>
+      </td>
+    </tr>
+
+    <!-- end content begin footer -->
+    <tr>
+      <td>
+        %%=ContentBlockByKey("20220919_GFSCA_Footer")=%%
+      </td>
+    </tr>
+  </table>
+  </td>
+  </tr>
+  </table>
+  <!-- End container and wrapper tables -->
+
+</body>
+</html>
+<!-- RegionEnd[ name:"Share Email" ] -->

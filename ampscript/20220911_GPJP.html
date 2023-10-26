@@ -1,0 +1,382 @@
+%%[ /* 20220911_GPJP */
+
+/* if adhoc24 contains a number, the subscriber is a member (CRM). If null, the subscriber is an non-member (NONCRM).*/ 
+set @adhoc24 = [adhoc24] 
+
+/* Gap Outlet Banner toggle - Y to show - N to hide */
+var @displayGPJP_Outlet, set @displayGPJP_Outlet = "N"
+
+/* Gap Shipping Banner CTA toggle - Y to show - N to hide */
+var @displayGPJP_shippingBanner, set @displayGPJP_shippingBanner = "N"
+
+/* pulls in AMPScript to convert date in email name and append to analytics via additional attribute 1*/
+ContentBlockByName("Content Builder\DEG Templates\Template Elements\20210402_GPJP_senddate")
+
+ContentBlockByName("Content Builder\DEG Templates\Template Elements\20210507_GPJP_EVO")
+
+var @omniture
+set @omniture = Concat("EV=", @EMAIL_VERSION, @senddate, "&DI=", EMAIL_KEY, "&CD=", CARD_TYPE, "_", CUST_STATUS)
+
+/* CRM VS. NONCRM SUBJECT LINE AND PREHEADER */
+var @subjectLine
+var @preheader
+
+/* Pre-header Text - will populate preheader variable in Content tab */
+var @preheader
+set @preheader = "きみらしく、じぶんらしく☆カラフルなスウェットや個性派アウターを合わせて夏→秋シフト"
+set @linkpreHeader = Concat("https://www.gap.co.jp/?tid=gjem000003", "&", @omniture)
+
+/* Declare and set all links */
+/* JP TIDs:
+top promo: gjem000011
+middle promo: gjem000012
+merch content/product message: gjem000013
+bottom promo: gjem000014
+*/
+
+/* Add or remove links if necessary */
+
+/*M1*/
+set @m1_main1 = Concat("https://i.gap.co.jp/pc/index.php?cmd=MPIN010000PC?&tid=gjem000011", "&", @omniture)
+
+/*M2*/
+set @m2_main1 = Concat("https://line.me/R/ti/p/@gapinc.?&tid=gjem000011", "&", @omniture)
+
+]%%
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-2022-jp">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>%%=v(@preheader)=%%</title>
+    <!-- CRM/NONCRM CSS -->
+    %%=ContentBlockByName("Content Builder\DEG Templates\Template Elements\20210402_GPJP_CSS")=%%
+</head>
+<body class="email-body" bgcolor="#ffffff" text="#000000" align="center" style="color:#000000; font-family: sans-serif; margin: 0; padding: 0;">
+ <table id="backgroundWrapper" border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
+ <tr>
+  <td align="center">
+   <div style="display: none; max-height: 0px; overflow: hidden;"> %%=v(@preheader)=%%
+            %%[
+   /* Sets a default amount of shims */
+   if empty(@preheader_shimCount) then
+   set @preheader_shimCount = 105
+   endif
+   /* Sets the amount of spaces specified by the shimCount variable
+   DO NOT reformat the "for" loop code! */ 
+   for @i = 1 to @preheader_shimCount DO
+   set @Preheader_Shim = "&nbsp;&zwnj;"
+   ]%%%%=v(@Preheader_Shim)=%%%%[next @i]%%
+            <custom name="opencounter" type="tracking" />
+   </div>
+   <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+    <tr>
+    <td class="main" align="center" style="width: 640px;">
+     <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">
+     <tr>
+                     <td align="center">
+      <!-- **** HEADER **** --> 
+      %%=ContentBlockByName("Content Builder\DEG Templates\Template Elements\2020_GPJP_header_COVID-19_updated_202006")=%% 
+      <!-- //**** HEADER **** -->
+      </td>
+     </tr>
+                   <!--***************************** BEGIN BODY *****************************--> 
+                   <!-- Add or remove rows/messages if necessary -->
+      
+     %%[ if IndexOf(@email_version, "NONCRM") > 0 then THEN ]%%
+      
+     <!--**** 02 MESSAGE ****-->
+     %%[ set @aliasName = Concat("EM_M2_JP") ]%%
+      <tr>
+      <td align="center">
+       <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+       <tr>
+        <td class="imagefw" align="center"><a href="%%=RedirectTo(@m2_main1)=%%" alias="%%= v(@aliasName) =%% NONCRM Banner" target="_blank"><img src="https://image.email.gap.co.jp/lib/fe9a13707564037c73/m/14/5590d768-9863-48de-9a55-cc2fb8d1f1e1.jpg" alt="GAP MEMBERSHIP会員限定 新規登録も対象! 表示価格より30％OFF セールアイテム・一部商品を除く 9/11まで  オンラインストア＆ストア LINEでカンタン新規登録" width="640" style="display: block; border: 0; margin: 0; max-width: 640px; width: 100%;" /></a></td>
+       </tr>
+       </table>
+      </td>
+     </tr> 
+     <!--//**** 02 MESSAGE ****-->
+     <!--//**** line ****-->
+     <tr>
+      <td height="50" style="line-height: 1px; font-size: 1px">&nbsp;</td>
+     </tr>
+     <!--//**** line ****-->
+     
+     %%[ else ]%%
+      
+                   <!--**** 01 MESSAGE ****--> 
+                   %%[ set @aliasName = Concat("EM_M1_JP") ]%%
+     <tr>
+      <td align="center">
+       <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+       <tr>
+        <td class="imagefw" align="center"><a href="%%=RedirectTo(@m1_main1)=%%" alias="%%= v(@aliasName) =%% CRM Banner" target="_blank"><img src="https://image.email.gap.co.jp/lib/fe9a13707564037c73/m/14/0cf6a954-a75e-4fc4-933a-a4679d2c3482.jpg" alt="GAP MEMBERSHIP会員限定 表示価格より30％OFF セールアイテム・一部商品を除く 9/11まで  オンラインストア＆ストア オンラインストアでのご利用は、下記クーポンコードをコピーし、お支払いページにてご入力ください" width="640" style="display: block; border: 0; margin: 0; max-width: 640px; width: 100%;" /></a></td>
+       </tr>
+       </table>
+      </td>
+     </tr> 
+     <tr>
+      <td align="center">
+       <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+       <tr>
+        <td align="left" style="background-color:#7d93ab; width:30px;"></td>
+        <td align="center" style="background-color:#ffffff; font-size:20px; line-height:2; width:580px;"><div style="font-family: Arial, Helvetica, 'sans-serif'; font-size:22px; font-weight:bold; color:#002554; overflow:hidden; max-width:200px; line-height:2.5; text-align:center;">THANKS30JP</div></td>
+        <td align="right" style="background-color: #7d93ab;width: 30px;"></td>
+       </tr>
+       </table>
+      </td>
+     </tr>
+     <tr style="background-color:#7d93ab;">
+      <td align="center" style="background-color:#7d93ab; overflow:hidden;"><a href="%%=RedirectTo(@m1_main1)=%%" alias="%%= v(@aliasName) =%%" target="_blank"><img src="https://image.email.gap.co.jp/lib/fe9a13707564037c73/m/14/aa20bb07-0a67-48c3-b87b-63a2a5518f59.jpg" alt="詳細はマイページにてご確認ください" width="640" style="display: block; border:0; margin:0; max-width:640px; width:100%;" /></a></td>
+     </tr>
+     <!--//**** 01 MESSAGE ****--> 
+     <!--//**** line ****-->
+     <tr>
+      <td height="50" style="line-height: 1px; font-size: 1px">&nbsp;</td>
+     </tr>
+     <!--//**** line ****-->
+      
+     %%[ endif ]%%
+     
+     <!--**** 03 MESSAGE ****-->
+     %%[ set @aliasName = Concat("EM_M3_JP") ]%%
+      <tr>
+      <td align="center">
+       <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+       <tr>
+        <td class="imagefw" align="center"><a href="https://mi.gap.com/p/cp/754a5dff1a54af87/c?mi_u=%%email_key%%&EV=%%EMAIL_VERSION%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%CARD_TYPE%%_%%CUST_STATUS%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2F4d8711435bd3952c%2Furl" alias="%%= v(@aliasName) =%%" target="_blank"><img src="https://mi.gap.com/p/rp/4d8711435bd3952c.png?mi_u=%%email_key%%&EV=%%EMAIL_VERSION%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%CARD_TYPE%%_%%CUST_STATUS%%&cvosrc=%%=v(@convertro)=%%" alt="総額からさらに10%OFF 一部除外品あり オンラインストア限定 期間限定 コピー：今すぐショッピング" width="640" style="display: block; border: 0; margin: 0; max-width: 640px; width: 100%;" /></a></td>
+       </tr>
+       </table>
+      </td>
+     </tr> 
+     <!--//**** 03 MESSAGE ****-->
+     <!--//**** line ****-->
+     <tr>
+      <td height="50" style="line-height: 1px; font-size: 1px">&nbsp;</td>
+     </tr>
+     <!--//**** line ****-->
+     <!--**** 04 MESSAGE ****-->
+     %%[ set @aliasName = Concat("EM_M4_JP") ]%%
+      <tr>
+      <td align="center">
+       <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+       <tr>
+        <td class="imagefw" align="center"><a href="https://mi.gap.com/p/cp/6e5d056152e2f114/c?mi_u=%%email_key%%&EV=%%EMAIL_VERSION%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2F4707bed535ae2864%2Furl&url_sig=jBSxOoyCfKc8wj" alias="%%= v(@aliasName) =%% IMG1" target="_blank"><img src="https://mi.gap.com/p/rp/4707bed535ae2864.png?mi_u=%%email_key%%&EV=%%EMAIL_VERSION%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="" width="640" style="display: block; border: 0; margin: 0; max-width: 640px; width: 100%;" /></a></td>
+       </tr>
+       </table>
+      </td>
+     </tr> 
+      <tr>
+      <td align="center">
+       <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+       <tr>
+        <td class="imagefw" align="center"><a href="https://mi.gap.com/p/cp/6e5d056152e2f114/c?mi_u=%%email_key%%&EV=%%EMAIL_VERSION%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2Fa2233cf63a689fd5%2Furl&url_sig=fIIVPDqJxhjeO9" alias="%%= v(@aliasName) =%% IMG2" target="_blank"><img src="https://mi.gap.com/p/rp/a2233cf63a689fd5.png?mi_u=%%email_key%%&EV=%%EMAIL_VERSION%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="ガールズ　レギンス" width="640" style="display: block; border: 0; margin: 0; max-width: 640px; width: 100%;" /></a></td>
+       </tr>
+       </table>
+      </td>
+     </tr> 
+      <tr>
+      <td align="center">
+       <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+       <tr>
+        <td class="imagefw" align="center"><a href="https://mi.gap.com/p/cp/6e5d056152e2f114/c?mi_u=%%email_key%%&EV=%%EMAIL_VERSION%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2Fef119425ecf0d482%2Furl&url_sig=KwMwk1FBIirYBX" alias="%%= v(@aliasName) =%% IMG3" target="_blank"><img src="https://mi.gap.com/p/rp/ef119425ecf0d482.png?mi_u=%%email_key%%&EV=%%EMAIL_VERSION%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="ガールズ　レギンス" width="640" style="display: block; border: 0; margin: 0; max-width: 640px; width: 100%;" /></a></td>
+       </tr>
+       </table>
+      </td>
+     </tr> 
+      <tr>
+      <td align="center">
+       <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+       <tr>
+        <td align="center" style="width: 50%;"><a href="https://mi.gap.com/p/cp/6e5d056152e2f114/c?mi_u=%%email_key%%&EV=%%EMAIL_VERSION%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2F6135d8aa270abc4a%2Furl&url_sig=HdL9aKHxeAiAVc" target="_blank" alias="%%=v(@aliasName)=%% CTA 1"><img src="https://mi.gap.com/p/rp/6135d8aa270abc4a.png?mi_u=%%email_key%%&EV=%%EMAIL_VERSION%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="ガールズ　レギンス" width="320" style="display: block; border: 0; margin: 0; max-width: 320px; width: 100%;" /></a></td>
+        <td align="center" style="width: 50%;"><a href="https://mi.gap.com/p/cp/6e5d056152e2f114/c?mi_u=%%email_key%%&EV=%%EMAIL_VERSION%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%CARD_TYPE%%_%%CUST_STATUS%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2F8bd9023d0b1bae6c%2Furl&url_sig=gZoUdpivpxO3OZ" target="_blank" alias="%%=v(@aliasName)=%% CTA 2"><img src="https://mi.gap.com/p/rp/8bd9023d0b1bae6c.png?mi_u=%%email_key%%&EV=%%EMAIL_VERSION%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%CARD_TYPE%%_%%CUST_STATUS%%&cvosrc=%%=v(@convertro)=%%" alt="幼児ガールズ　レギンス" width="320" style="display: block; border: 0; margin: 0; max-width: 320px; width: 100%;" /></a></td>
+                         </tr>
+                        </table>
+                     </td>
+                   </tr>
+      <tr>
+      <td align="center">
+       <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+       <tr>
+        <td align="center" style="width: 50%;"><a href="https://mi.gap.com/p/cp/6e5d056152e2f114/c?mi_u=%%email_key%%&EV=%%EMAIL_VERSION%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2F28c5f22483d1f282%2Furl&url_sig=05lIvuDZ3fVehk" target="_blank" alias="%%=v(@aliasName)=%% CTA 3"><img src="https://mi.gap.com/p/rp/28c5f22483d1f282.png?mi_u=%%email_key%%&EV=%%EMAIL_VERSION%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="ガールズ　レギンス" width="320" style="display: block; border: 0; margin: 0; max-width: 320px; width: 100%;" /></a></td>
+        <td align="center" style="width: 50%;"><a href="https://mi.gap.com/p/cp/6e5d056152e2f114/c?mi_u=%%email_key%%&EV=%%EMAIL_VERSION%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%CARD_TYPE%%_%%CUST_STATUS%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2F7c9e619437128216%2Furl&url_sig=ohqWLPOZmjt7Ka" target="_blank" alias="%%=v(@aliasName)=%% CTA 4"><img src="https://mi.gap.com/p/rp/7c9e619437128216.png?mi_u=%%email_key%%&EV=%%EMAIL_VERSION%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%CARD_TYPE%%_%%CUST_STATUS%%&cvosrc=%%=v(@convertro)=%%" alt="幼児ガールズ　レギンス" width="320" style="display: block; border: 0; margin: 0; max-width: 320px; width: 100%;" /></a></td>
+                         </tr>
+                        </table>
+                     </td>
+                   </tr>
+     <!--//**** 04 MESSAGE ****-->
+     <!--//**** line ****-->
+     <tr>
+      <td height="50" style="line-height: 1px; font-size: 1px">&nbsp;</td>
+     </tr>
+     <!--//**** line ****-->
+              <!--**** 05 MI00050 MI Product Recs 4 BY 4 ****-->
+                   %%[ set @aliasName = Concat("EM_M5_JP") ]%%
+           <tr>
+                  <td align="center">
+       <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+                      <tr>
+                         <td class="imagefw" align="center"><a href="https://mi.gap.com/p/cp/c10f24d2edf23eb0/c?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2Fbc1793724371f8a5%2Furl&url_sig=Tk3zWd5ULS8wT5" target="_blank" alias="%%= v(@aliasName) =%%"><img src="https://mi.gap.com/p/rp/bc1793724371f8a5.png?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="【WEEKLY】ベストセラー商品" width="640" style="display: block; border: 0; margin: 0; max-width: 640px; width: 100%;" /></a></td>
+                      </tr>
+                     </table>
+      </td>
+     </tr>
+     <tr>
+      <td align="center">
+       <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+                      <tr>
+                         <td align="center" valign="top"><a href="https://mi.gap.com/p/cp/c10f24d2edf23eb0/c?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2F7c4a4fada1d4a562%2Furl&url_sig=4wCBNG9t2MhyGe" target="_blank" alias="%%= v(@aliasName) =%% Women Products - 1*4"><img src="https://mi.gap.com/p/rp/7c4a4fada1d4a562.png?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="[ウィメンズ ]人気急上昇! 今売れています" width="168" style="display: block; border: 0; margin: 0; max-width: 168px; width: 100%;" /></a></td>
+                         <td align="center" valign="top"><a href="https://mi.gap.com/p/cp/c10f24d2edf23eb0/c?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2F3d7449d174575a96%2Furl&url_sig=3mEqWPE0YzpIDN" target="_blank" alias="%%= v(@aliasName) =%% Women Products - 2*4"><img src="https://mi.gap.com/p/rp/3d7449d174575a96.png?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="[ウィメンズ ]人気急上昇! 今売れています" width="152" style="display: block; border: 0; margin: 0; max-width: 152px; width: 100%;" /></a></td>
+                         <td align="center" valign="top"><a href="https://mi.gap.com/p/cp/c10f24d2edf23eb0/c?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2Fe2d0aaee2577b21c%2Furl&url_sig=0cLw4mTGx00cWF" target="_blank" alias="%%= v(@aliasName) =%% Men Products - 3*4"><img src="https://mi.gap.com/p/rp/e2d0aaee2577b21c.png?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="[メンズ]人気急上昇! 今売れています" width="152" style="display: block; border: 0; margin: 0; max-width: 152px; width: 100%;" /></a></td>
+                         <td align="center" valign="top"><a href="https://mi.gap.com/p/cp/c10f24d2edf23eb0/c?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2F4d39eed0a47fe217%2Furl&url_sig=BmmdwN2QkvAYig" target="_blank" alias="%%= v(@aliasName) =%% Men Products - 4*4"><img src="https://mi.gap.com/p/rp/4d39eed0a47fe217.png?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="[メンズ]人気急上昇! 今売れています" width="168" style="display: block; border: 0; margin: 0; max-width: 168px; width: 100%;" /></a></td>
+       </tr>
+                     </table>
+      </td>
+     </tr>
+     <tr>
+      <td align="center">
+       <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+                      <tr>
+                         <td align="center" valign="top"><a href="https://mi.gap.com/p/cp/c10f24d2edf23eb0/c?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2F834ab47d4ef45fd2%2Furl&url_sig=z7U1Grw8XXlOr4" target="_blank" alias="%%= v(@aliasName) =%% KG Products - 1*4"><img src="https://mi.gap.com/p/rp/834ab47d4ef45fd2.png?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="[ガールズ]人気急上昇! 今売れています" width="168" style="display: block; border: 0; margin: 0; max-width: 168px; width: 100%;" /></a></td>
+                         <td align="center" valign="top"><a href="https://mi.gap.com/p/cp/c10f24d2edf23eb0/c?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2F24176716d8d9c8f9%2Furl&url_sig=o0XGyk9SzPt26c" target="_blank" alias="%%= v(@aliasName) =%% KG Products - 2*4"><img src="https://mi.gap.com/p/rp/24176716d8d9c8f9.png?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="[ガールズ]人気急上昇! 今売れています" width="152" style="display: block; border: 0; margin: 0; max-width: 152px; width: 100%;" /></a></td>
+                         <td align="center" valign="top"><a href="https://mi.gap.com/p/cp/c10f24d2edf23eb0/c?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2Fbe01bba2cff4ed4e%2Furl&url_sig=njbkSsL1AQAUSF" target="_blank" alias="%%= v(@aliasName) =%% KB Products - 3*4"><img src="https://mi.gap.com/p/rp/be01bba2cff4ed4e.png?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="[ボーイズ ]人気急上昇! 今売れています" width="152" style="display: block; border: 0; margin: 0; max-width: 152px; width: 100%;" /></a></td>
+                         <td align="center" valign="top"><a href="https://mi.gap.com/p/cp/c10f24d2edf23eb0/c?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2Fb1c141721f33d1db%2Furl&url_sig=TUaVV64l6vgrGq" target="_blank" alias="%%= v(@aliasName) =%% KB Products - 4*4"><img src="https://mi.gap.com/p/rp/b1c141721f33d1db.png?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="[ボーイズ ]人気急上昇! 今売れています" width="168" style="display: block; border: 0; margin: 0; max-width: 168px; width: 100%;" /></a></td>
+       </tr>
+                     </table>
+      </td>
+     </tr>
+     <tr>
+      <td align="center">
+       <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+                      <tr>
+                         <td align="center" valign="top"><a href="https://mi.gap.com/p/cp/c10f24d2edf23eb0/c?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2Fb0e670e4f1488af6%2Furl&url_sig=XjZSX0iStb2bJU" target="_blank" alias="%%= v(@aliasName) =%% TG  Products - 1*4"><img src="https://mi.gap.com/p/rp/b0e670e4f1488af6.png?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="[幼児ガールズ ]人気急上昇! 今売れています" width="168" style="display: block; border: 0; margin: 0; max-width: 168px; width: 100%;" /></a></td>
+                         <td align="center" valign="top"><a href="https://mi.gap.com/p/cp/c10f24d2edf23eb0/c?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2F85e873c6bfab30dd%2Furl&url_sig=Z1Gy8YbIIjGgIH" target="_blank" alias="%%= v(@aliasName) =%% TG  Products - 2*4"><img src="https://mi.gap.com/p/rp/85e873c6bfab30dd.png?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="[幼児ガールズ ]人気急上昇! 今売れています" width="152" style="display: block; border: 0; margin: 0; max-width: 152px; width: 100%;" /></a></td>
+                         <td align="center" valign="top"><a href="https://mi.gap.com/p/cp/c10f24d2edf23eb0/c?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2Fac2b62bb99908fee%2Furl&url_sig=puIsoXHitC6TVY" target="_blank" alias="%%= v(@aliasName) =%% TB Products - 3*4"><img src="https://mi.gap.com/p/rp/ac2b62bb99908fee.png?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="[幼児ボーイズ ]人気急上昇! 今売れています" width="152" style="display: block; border: 0; margin: 0; max-width: 152px; width: 100%;" /></a></td>
+                         <td align="center" valign="top"><a href="https://mi.gap.com/p/cp/c10f24d2edf23eb0/c?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2Fb6003c09e5c4be41%2Furl&url_sig=otgsv6Xqh6fw4f" target="_blank" alias="%%= v(@aliasName) =%% TB Products - 4*4"><img src="https://mi.gap.com/p/rp/b6003c09e5c4be41.png?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="[幼児ボーイズ ]人気急上昇! 今売れています" width="168" style="display: block; border: 0; margin: 0; max-width: 168px; width: 100%;" /></a></td>
+       </tr>
+                     </table>
+      </td>
+     </tr>
+     <tr>
+      <td align="center">
+       <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+                      <tr>
+                         <td align="center" valign="top"><a href="https://mi.gap.com/p/cp/c10f24d2edf23eb0/c?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2F1d37fe3067504b83%2Furl&url_sig=Btqx2c39CZGykR" target="_blank" alias="%%= v(@aliasName) =%% BG Products - 1*4"><img src="https://mi.gap.com/p/rp/1d37fe3067504b83.png?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="[ベビーガールズ]人気急上昇! 今売れています" width="168" style="display: block; border: 0; margin: 0; max-width: 168px; width: 100%;" /></a></td>
+                         <td align="center" valign="top"><a href="https://mi.gap.com/p/cp/c10f24d2edf23eb0/c?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2Fba3717773f6daf1e%2Furl&url_sig=Iu2DQ4KOcPV0oV" target="_blank" alias="%%= v(@aliasName) =%% BG Products - 2*4"><img src="https://mi.gap.com/p/rp/ba3717773f6daf1e.png?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="[ベビーガールズ]人気急上昇! 今売れています" width="152" style="display: block; border: 0; margin: 0; max-width: 152px; width: 100%;" /></a></td>
+                         <td align="center" valign="top"><a href="https://mi.gap.com/p/cp/c10f24d2edf23eb0/c?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2Fa24ff535e3f95f71%2Furl&url_sig=EyMcMYFyMnyRP6" target="_blank" alias="%%= v(@aliasName) =%% BB Products - 3*4"><img src="https://mi.gap.com/p/rp/a24ff535e3f95f71.png?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="[ベビーボーイズ]人気急上昇! 今売れています" width="152" style="display: block; border: 0; margin: 0; max-width: 152px; width: 100%;" /></a></td>
+                         <td align="center" valign="top"><a href="https://mi.gap.com/p/cp/c10f24d2edf23eb0/c?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2F7b5ddf26fb9e5ced%2Furl&url_sig=KH9G6yQAKU5HcE" target="_blank" alias="%%= v(@aliasName) =%% BB Products - 4*4"><img src="https://mi.gap.com/p/rp/7b5ddf26fb9e5ced.png?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="[ベビーボーイズ]人気急上昇! 今売れています" width="168" style="display: block; border: 0; margin: 0; max-width: 168px; width: 100%;" /></a></td>
+       </tr>
+                     </table>
+      </td>
+     </tr>
+     <!--//****05 MI00050 MI Product Recs 4 BY 4 ****-->
+     <!--//**** line ****-->
+     <tr>
+      <td height="50" style="line-height: 1px; font-size: 1px">&nbsp;</td>
+     </tr>
+     <!--//**** line ****-->
+     <!--**** 06 MESSAGE ****-->
+     %%[ set @aliasName = Concat("EM_M6_JP") ]%%
+      <tr>
+      <td align="center">
+       <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+       <tr>
+        <td class="imagefw" align="center"><a href="https://mi.gap.com/p/cp/afb5b8837cd910ea/c?mi_u=%%email_key%%&EV=%%EMAIL_VERSION%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%CARD_TYPE%%_%%CUST_STATUS%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2F7c38e7969e0854df%2Furl" alias="%%= v(@aliasName) =%%" target="_blank"><img src="https://mi.gap.com/p/rp/7c38e7969e0854df.png?mi_u=%%email_key%%&EV=%%EMAIL_VERSION%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%CARD_TYPE%%_%%CUST_STATUS%%&cvosrc=%%=v(@convertro)=%%" alt="" width="640" style="display: block; border: 0; margin: 0; max-width: 640px; width: 100%;" /></a></td>
+       </tr>
+       </table>
+      </td>
+     </tr> 
+     <!--//**** 06 MESSAGE ****-->
+     <!--//**** line ****-->
+     <tr>
+      <td height="50" style="line-height: 1px; font-size: 1px">&nbsp;</td>
+     </tr>
+     <!--//**** line ****-->
+     <!--**** 07 MESSAGE ****-->
+     %%[ set @aliasName = Concat("EM_M7_JP") ]%%
+      <tr>
+      <td align="center">
+       <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+       <tr>
+        <td class="imagefw" align="center"><a href="https://mi.gap.com/p/cp/587d982b1157b119/c?mi_u=%%email_key%%&EV=%%EMAIL_VERSION%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%CARD_TYPE%%_%%CUST_STATUS%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2F202f9cd54983666a%2Furl" alias="%%= v(@aliasName) =%%" target="_blank"><img src="https://mi.gap.com/p/rp/202f9cd54983666a.png?mi_u=%%email_key%%&EV=%%EMAIL_VERSION%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%CARD_TYPE%%_%%CUST_STATUS%%&cvosrc=%%=v(@convertro)=%%" alt="" width="640" style="display: block; border: 0; margin: 0; max-width: 640px; width: 100%;" /></a></td>
+       </tr>
+       </table>
+      </td>
+     </tr> 
+     <!--//**** 07 MESSAGE ****-->
+     <!--//**** line ****-->
+     <tr>
+      <td height="50" style="line-height: 1px; font-size: 1px">&nbsp;</td>
+     </tr>
+     <!--//**** line ****-->
+     <!--**** 08 MESSAGE ****-->
+     %%[ set @aliasName = Concat("EM_M8_JP") ]%%
+      <tr>
+      <td align="center">
+       <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+       <tr>
+        <td class="imagefw" align="center"><a href="https://mi.gap.com/p/cp/9f2a71acf175d915/c?mi_u=%%email_key%%&EV=%%EMAIL_VERSION%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2F9d4638503a1bf400%2Furl" alias="%%= v(@aliasName) =%%" target="_blank"><img src="https://mi.gap.com/p/rp/9d4638503a1bf400.png?mi_u=%%email_key%%&EV=%%EMAIL_VERSION%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="SNS掲載アイテム" width="640" style="display: block; border: 0; margin: 0; max-width: 640px; width: 100%;" /></a></td>
+       </tr>
+       </table>
+      </td>
+     </tr> 
+     <!--//**** 08 MESSAGE ****-->
+     <!--//**** line ****-->
+     <tr>
+      <td height="50" style="line-height: 1px; font-size: 1px">&nbsp;</td>
+     </tr>
+     <!--//**** line ****-->
+     <!--**** 09 MESSAGE JOL - Freeshipping+YAMATO+OUTLET ****-->
+     %%[ set @aliasName = Concat("EM_M9_JP") ]%%
+     <tr>
+      <td align="center">
+       <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+       <tr>
+        <td class="imagefw" align="center"><a href="https://mi.gap.com/p/cp/cb81130e9d30c870/c?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2F66a741a87d2d11b1%2Furl&url_sig=d29nqRnx4JhogF" target="_blank" alias="%%= v(@aliasName) =%% Freeshipping"><img src="https://mi.gap.com/p/rp/66a741a87d2d11b1.png?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="5,000円以上のご注文で配送料無料&最短翌日到着" width="640" style="display: block; border: 0; margin: 0; max-width: 640px; width: 100%;" /></a></td>
+       </tr>
+       </table>
+      </td>
+     </tr>
+     <tr>
+      <td align="center">
+       <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+       <tr>
+        <td class="imagefw" align="center"><a href="https://mi.gap.com/p/cp/cb81130e9d30c870/c?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2F110ca8fbabe38273%2Furl&url_sig=Mrlh1sVxhiCTjR" target="_blank" alias="%%= v(@aliasName) =%% YAMATO EASY RETURN"><img src="https://mi.gap.com/p/rp/110ca8fbabe38273.png?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="EASY RETURN" width="640" style="display: block; border: 0; margin: 0; max-width: 640px; width: 100%;" /></a></td>
+       </tr>
+       </table>
+      </td>
+     </tr>
+     <tr>
+      <td align="center">
+       <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+       <tr>
+        <td class="imagefw" align="center"><img src="https://mi.gap.com/p/rp/1073011fdf30ea31.png?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="" width="640" style="display: block; border: 0; margin: 0; max-width: 640px; width: 100%;" /></td>
+       </tr>
+       </table>
+      </td>
+     </tr>
+     <tr>
+      <td align="center">
+       <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+       <tr>
+        <td class="imagefw" align="center"><a href="https://mi.gap.com/p/cp/cb81130e9d30c870/c?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%&url=https%3A%2F%2Fmi.gap.com%2Fp%2Frp%2Fda96e4c71f16aa7a%2Furl&url_sig=ryyIFLVbqBEfP3" target="_blank" alias="%%= v(@aliasName) =%% GAP OUTLET"><img src="https://mi.gap.com/p/rp/da96e4c71f16aa7a.png?mi_u=%%email_key%%&EV=%%=v(@EMAIL_VERSION)=%%%%=v(@senddate)=%%&DI=%%EMAIL_KEY%%&CD=%%=v(@CARD_TYPE)=%%_%%=v(@CUST_STATUS)=%%&cvosrc=%%=v(@convertro)=%%" alt="Gap Outlet" width="640" style="display: block; border: 0; margin: 0; max-width: 640px; width: 100%;" /></a></td>
+       </tr>
+       </table>
+      </td>
+     </tr>
+     <!--//**** 09 MESSAGE JOL - Freeshipping+YAMATO+OUTLET ****-->
+      <!--***************************** END BODY *****************************--> 
+     <!-- BEGIN FOOTER-->
+     %%=ContentBlockByName("Content Builder\DEG Templates\Template Elements\20210402_GPJP_Footer")=%%
+     </table>
+    </td>
+   </tr>
+   </table>
+  </td>
+ </tr>
+ </table>
+</body>
+</html>
