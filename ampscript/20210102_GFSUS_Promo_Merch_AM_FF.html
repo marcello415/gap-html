@@ -142,33 +142,17 @@ ContentBlockByName("Shared Content\_CROSSBRAND\Snippets\MI_Timed_Content_QA_Logi
             </td>
           </tr>
 
-          %%[ if (@ifadhoc20 == "BRIGHTACQ") then ]%%
+          %%[ if @adhoc20 == "BRIGHTACQ" then ]%%
           <tr>
             <td style="padding-top: 44px" class="between">
               %%[ set @moduleNum = "6" ]%%
               %%= ContentBlockByName("Content Builder\Campaigns\2021\01 January\20210102\Contents\20210102_GFSUS_MTL_Acquisition") =%%
             </td>
           </tr>
-
-          <tr>
-            <td style="padding-top: 44px" class="between">
-              %%[ set @moduleNum = "6" ]%%
-              %%= =%%
-            </td>
-          </tr>
-
           %%[ endif ]%%
 
 
-          %%[ if (ON) then ]%%
-          <tr>
-            <td style="padding-top: 44px" class="between">
-              %%[ set @moduleNum = "7" ]%%
-              %%= =%%
-            </td>
-          </tr>
-
-          %%[ endif ]%%
+          
         </table>
 
         <!--end content modules -->
