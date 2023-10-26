@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>AMPscript Examples</title>
+</head>
+
+<body>
+
+    <!-- IndexOf Example -->
+    %%[
+    if indexOf(@ADHOC3, "RETAIL") > 0 then
+    /* Your code here */
+    endif
+    ]%%
+
+    <!-- Set Variable If Empty -->
+    %%[
+    if empty(@ADHOC3) then
+    set @ADHOC3 = [ADHOC3]
+    endif
+    ]%%
+
+    <!-- Inline If-Else AMPscript Example -->
+    %%=iif(Empty(@ilp_first_name), Concat("You have $", @GC_TOTAL, " in GapCash (and your order ships free)"),
+    Concat(ProperCase(Trim(@ilp_first_name)),", you have $", @GC_TOTAL, " in GapCash (and your order ships free)"))=%%
+
+    %%=Concat("Use your $", @GC_TOTAL, " in GapCash on styles up to 75% off")=%%
+
+    <!-- Claim Row Example -->
+    %%[
+    set @email_address = [EMAIL_ADDRESS]
+    set @couponRow = ClaimRow("20230225_GFSUS_Store_Closure_Codes", "IsClaimed", "EmailAddress", @email_address)
+    set @couponCode = Field(@couponRow, "coupon_code")
+    ]%%
+
+    <!-- Subject Line Personalization Extended -->
+    %%[
+    if @language == "en" then
+    set @subjectLine = Concat(iif(Empty(@first_name), "It's", Concat(ProperCase(Trim(@first_name)), ", it's")), " time
+    to use your $", @GC_TOTAL, " in GapCash!")
+    else
+    set @subjectLine = Concat(iif(Empty(@first_name), "C'est", Concat(ProperCase(Trim(@first_name)), ", C'est")), " le
+    temps d’utiliser vos $", @GC_TOTAL, " en DollarsGap!")
+    endif
+    ]%%
+
+    <!-- Set Movable Ink Content for Testing -->
+    %%[
+    SET @mi_now = "2022-11-03T00:01:01-07:00"
+    ]%%
+
+    <!-- For Loop Example for a Receipt from a DE -->
+    %%[
+    var @deRows, @rowCount
+    set @deRows = LookupOrderedRows("YourDataExtensionName", 5, "EmailAddress", @email_address, "OrderDate DESC")
+    set @rowCount = RowCount(@deRows)
+
+    if @rowCount > 0 then
+    for @i = 1 to @rowCount do
+    var @orderRow, @orderDate, @orderTotal
+    set @orderRow = Row(@deRows, @i)
+    set @orderDate = Field(@orderRow, "OrderDate")
+    set @orderTotal = Field(@orderRow, "OrderTotal")
+
+    /* Display order information, you can modify this part as needed */
+    ]%%
+    <div>
+        Order Date: %%=v(@orderDate)=%%
+        Order Total: %%=v(@orderTotal)=%%
+    </div>
+    %%[
+    next @i
+    else
+    /* No orders found for the email address */
+    endif
+    ]%%
+
+
+    <!-- Segementation Example-->
+
+    %%[
+    /* Date Checking */
+    set @email_senddate = "2023-10-26"
+
+    /* Segmentation */
+    set @segment_num = 2
+    set @adhoc_evo_scheme = "GFSUS_SHOES"
+
+    if IndexOf(@adhoc_evo_scheme, "GFSUS_SHOES") > 0 then
+    var @adhoc_evo_append
+    set @segment_splits = "33/33/33"
+    set @rts_name = "PZP2Q6"
+    ContentBlockByKey("RTS_Cust_Key")
+
+    if @segment_num == 1 then
+    set @adhoc_evo_append = "SHOES_TEST"
+    elseif @segment_num == 2 then
+    set @adhoc_evo_append = "SHOES_CONTROL"
+    else
+    set @adhoc_evo_append = "SHOES_OTHER"
+    endif
+
+    /* Display different content for each segment */
+    set @email_content = ContentBlockByKey(Concat("Content_", @adhoc_evo_append))
+    ]%%
+
+    <p>This is the content for the %%=v(@adhoc_evo_append)=%% segment:</p>
+
+
+</body>
+
+</html>
