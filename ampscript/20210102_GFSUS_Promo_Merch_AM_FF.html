@@ -1,0 +1,204 @@
+%%[ /* 20210102_GFSUS_Promo_Merch_AM_FF */
+/*  */
+
+/* toggles default to showing - set to "N" to hide */
+set @FreeShipBnr = "Y"
+set @toggleHeaderLogo = ""  
+set @toggleHeaderTagline = ""
+set @togglePreHeader = "" 
+set @navToggle = ""  
+set @VAWP = "" 
+set @mobilehidePH        = "y" /* typical state */
+set @displayRewards = "y"
+set @displayBrightRewards = "Y" /* To hide Bright rewards SET @displayBrightRewards = "N" */
+set @hideRevRetention = "Y" /* set @hideRevRetention to "Y" if client asks to hide */
+set @revRetentionPlacement = "T" /* set to "T" for top and "B" for bottom */
+set @hideAttrition = "Y" /* set @hideAttrition to "Y" if client asks to hide */
+set @hide_gpnc = "Y" /* set @hide_gpc to "Y" to hide  */
+
+set @legal = "" /*do not delete. leave empty if not needed*/
+
+set @subjectLine = "Deal on deals: up to 75% off + extra 50% off clearance + THIS BONUS"
+set @preheader = "All logo and jeans: now 40% off."
+
+if Empty(@EMAIL_VERSION) then
+   set @EMAIL_VERSION = [EMAIL_VERSION]
+endif
+
+/* Rev Retention Logic + EVO */
+ContentBlockByName("Shared Content\GPUSO\Projects\Revenue Retention\20201113_GFSUS_RevRetention_Logic")
+
+/* Evergreen EVO */
+ContentBlockByName("Shared Content\GPUSO\Snippets\20200809_GPUSO_EVO")
+
+/* Defines basic omniture logic and the sendate logic - do not move or remove the call to it */
+ContentBlockByName("Shared Content\_GLOBAL\Snippets\GFS_sendDateConversion")
+
+/* set links and any custom variables here */
+set @linkPreHeader  = concat("https://www.gapfactory.com/?tid=gfem000000", "&", @omniture)
+set @linkStoreLocator = concat("https://www.gap.com/customerService/storeLocator.do?showOutlets=true", "&", @omniture)
+
+/* ************text email content************ 
+%%=ContentBlockByName("Shared Content\GPUSO\PlainText\20180319_GOUS_TXT_Email")=%%
+*/
+ContentBlockByName("Shared Content\_CROSSBRAND\Snippets\MI_Timed_Content_QA_Logic")
+]%%
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>%%=v(@subjectLine)=%%</title>
+<!--[if gt mso 13]>
+<style type="text/css" media="all">
+ /* Outlook 2013+ Height Fix */
+ table, tr, td {border-collapse: collapse;}
+ td { line-height:0px; mso-line-height-rule:exactly }
+</style>
+<![endif]-->  
+<style>img[class="photo"], .photo {width: 100%; height: auto; display: block;}</style>
+%%= ContentBlockByName("Shared Content\_GLOBAL\Snippets\MobileFullBleedCSSBlock") =%%   
+%%= ContentBlockByName("Shared Content\_GLOBAL\Snippets\StandardCSSBlock") =%%
+ <style type="text/css">
+  @media only screen and (max-width: 480px) {
+    #header {padding-bottom: 11px !important;}  
+    #footer {padding-top: 11px !important;}     
+   td[class="between"] {padding-top: 22px !important;}      
+   td[class="between-btw"] {padding-bottom: 22px !important;}     
+    td[class="MspaceBot22"], .MspaceBot22 {padding-bottom: 22px !important;}
+  }
+ </style>
+</head>
+<body style="-webkit-text-size-adjust:none; -ms-text-size-adjust:none; margin:0px;">
+
+  <!-- Begin container and wrapper tables -->
+  <table border="0" cellpadding="0" cellspacing="0" align="center" bgcolor="#FFFFFF" id="backgroundTable">
+    <!--start header table -->
+    <tr>
+      <td align="center" style="padding-bottom: 22px;" id="header">
+        <table border="0" cellpadding="0" cellspacing="0" width="640" align="center" class="wrapper">
+          <tr>
+            <td>
+              %%=ContentBlockByName("Shared Content\GPUSO\Headers\20201013_GPFSUS_ResHeader")=%%
+              <div style="display: none; overflow: hidden; height: 0;">
+                <custom name="opencounter" type="tracking" />
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <!--end header table -->
+    <tr>
+      <td align="center">
+        <!-- Begin Rev Retention -->
+        %%[ if @revRetentionPlacement == "T" then ]%%
+        %%=ContentBlockByName("Shared Content\GPUSO\Projects\Revenue Retention\contents\GFSUS_RevRetention_Banner") =%%
+        %%[ endif ]%%
+        <!-- End Rev Retention -->
+
+        <!-- Begin Attrition -->
+        %%=ContentBlockByName("Shared Content\GPUSO\Projects\DailyEPNYFile\20201013_GFSUS_Attrition")=%%
+        <!-- End Attrition -->
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <!--start content modules -->
+
+        <table border="0" cellpadding="0" cellspacing="0" width="640" class="wrapper">
+          <tr>
+            <td>
+              %%[ set @moduleNum = "1" ]%%
+              %%= ContentBlockByName("Content Builder\Campaigns\2021\01 January\20210102\Contents\20210102_GFSUS_Email_Exclusive_Extra_XX_off_CLX_BANNER") =%%
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding-top: 44px" class="between">
+              %%[ set @moduleNum = "2" ]%%
+              %%= ContentBlockByName("Content Builder\Campaigns\2021\01 January\20210102\Contents\20210102_GFSUS_Great_Gap_Sale_Up_to_75_offXX_off_CLX_Visual_Div_Nav") =%%
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding-top: 44px" class="between">
+              %%[ set @moduleNum = "3" ]%%
+              %%= ContentBlockByName("Content Builder\Campaigns\2021\01 January\20210102\Contents\20210102_GFSUS_MI_Scrape_Clearance_All_Div_5x4") =%%
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding-top: 44px" class="between">
+              %%[ set @moduleNum = "4" ]%%
+              %%= ContentBlockByName("Content Builder\Campaigns\2021\01 January\20210101\Contents\20210101_GFSUS_40_Off_All_Jeans_Logo_BANNER") =%%
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding-top: 44px" class="between">
+              %%[ set @moduleNum = "5" ]%%
+              %%= ContentBlockByName("Content Builder\Campaigns\2021\01 January\20210102\Contents\20210102_GFSUS_Face_Masks_Contour_Design_Collection_Range_BANNER_R45") =%%
+            </td>
+          </tr>
+
+          %%[ if (@ifadhoc20 == "BRIGHTACQ") then ]%%
+          <tr>
+            <td style="padding-top: 44px" class="between">
+              %%[ set @moduleNum = "6" ]%%
+              %%= ContentBlockByName("Content Builder\Campaigns\2021\01 January\20210102\Contents\20210102_GFSUS_MTL_Acquisition") =%%
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding-top: 44px" class="between">
+              %%[ set @moduleNum = "6" ]%%
+              %%= =%%
+            </td>
+          </tr>
+
+          %%[ endif ]%%
+
+
+          %%[ if (ON) then ]%%
+          <tr>
+            <td style="padding-top: 44px" class="between">
+              %%[ set @moduleNum = "7" ]%%
+              %%= =%%
+            </td>
+          </tr>
+
+          %%[ endif ]%%
+        </table>
+
+        <!--end content modules -->
+      </td>
+    </tr>
+
+    <!-- start footer -->
+    <tr>
+      <td align="center">
+        <!-- Begin Rev Retention -->
+        %%[ if @revRetentionPlacement == "B" then ]%%
+        %%=ContentBlockByName("Shared Content\GPUSO\Projects\Revenue Retention\contents\GFSUS_RevRetention_Banner") =%%
+        %%[ endif ]%%
+        <!-- End Rev Retention -->
+      </td>
+    </tr>
+    <tr>
+      <td align="center" style="padding-top: 22px" id="footer">
+        <table border="0" cellpadding="0" cellspacing="0" width="640" align="center" class="wrapper">
+          <tr>
+            <td align="center">
+              %%=ContentBlockByName("Shared Content\GPUSO\Footers\20201209_GPFSUS_ResFooter")=%%
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <!-- end footer -->
+  </table>
+  %%= ContentBlockByName("Shared Content\_GLOBAL\Snippets\MobileFullBleedCSSBlock") =%%
+  <!-- End container and wrapper tables -->
+</body>
+</html>
