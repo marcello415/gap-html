@@ -1,0 +1,136 @@
+%%[ /* 20230317_GFSUS_CST_SFMC */
+
+/* DE */
+set @ADHOC4   = AttributeValue("ADHOC4")
+set @ADHOC10  = AttributeValue("ADHOC10")
+
+/* Toggles */
+set @displayILPStatusWidget = "N"
+set @displayILPBirthdayBanner = "N"
+set @displayILPCashPrograms = "N"
+set @displayILPCashPrograms = "N"
+set @displayILPContainer1 = "N"
+set @displayILPContainer2 = "N"
+set @displayILPCardAcq = "N"
+set @displayILPAcqWidget = "N"
+set @displayILPAcqContainer = "N"
+set @displayTopNav = "N"
+set @displayHeaderLogo = "y"
+set @displayCardholderRewards = "N"
+set @displayBrightRewards = "N"
+set @displayStoreLocator = "N"
+set @displayWaysToShop = "N"
+set @displayWaysToPay = "N"
+set @displayEDFS = "N"
+set @displayEvergreenCards = "N"
+set @hideRevRetention = "Y" /* set @hideRevRetention to "Y" if client asks to hide */
+set @revRetentionPlacement = "t" 
+set @hideAttrition = "Y" /* set @hideAttrition to "Y" if client asks to hide */
+set @hideUnsub = "Y"
+set @legal = ""
+
+if Empty(@EMAIL_VERSION) then
+   set @EMAIL_VERSION = AttributeValue("EMAIL_VERSION")
+endif
+ 
+/* SL/ PH */ 
+set @subjectLine = "You’ve been chosen!"
+set @preHeader = "Share your opinion on our upcoming line"
+
+/* Attrition Logic + EVO */
+ContentBlockByName("Shared Content\GPUSO\Projects\DailyEPNYFile\20210519_GFSUS_Attrition_Logic")
+
+/* Adhoc EVO */
+ContentBlockByName("Shared Content\GPUSO\Snippets\20210623_GFSUS_Adhoc_EVO")
+
+/* Evergreen EVO */
+ContentBlockByName("Shared Content\GPUSO\Snippets\20210720_GFSUS_EVO")
+
+/* Omniture */
+ContentBlockByName("Shared Content\_GLOBAL\Snippets\GFS_sendDateConversion")
+
+/* set links and any custom variables here */
+set @linkPreHeader = TreatAsContent("https://mi.gapfactory.com/p/cp/ac52137837150b1a/c?mi_u=%%email_key%%&id=%%EMAIL_VERSION%%&xid=%%EMAIL_KEY%%&adhoc12=%%adhoc12%%&url=https%3A%2F%2Fmi.gapfactory.com%2Fp%2Frp%2F861b65429639d37e%2Furl&url_sig=sspJEHRv575FNg")
+set @linkStoreLocator = concat("https://www.gap.com/customerService/storeLocator.do?showOutlets=true", "&", @omniture)
+
+
+]%%
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+ <title>%%=v(@subjectLine)=%%</title>
+%%= ContentBlockByKey("20210515_Global_CSS")=%%
+</head>
+<body style="-webkit-text-size-adjust:none; -ms-text-size-adjust:none; margin:0px;">
+
+  <!-- Begin container and wrapper tables -->
+  <table border="0" cellpadding="0" cellspacing="0" align="center" bgcolor="#FFFFFF" id="backgroundTable">
+    <!--start header table -->
+    <tr>
+      <td align="center">
+        <table border="0" cellpadding="0" cellspacing="0" width="640" align="center" class="wrapper">
+
+          <!-- START Header -->
+          <tr>
+            <td>
+              %%=ContentBlockByKey("20230228_GFSUS_Header")=%%
+              <div style="display:none; max-height: 0px;overflow: hidden;font-size:0px;line-height:0px;">
+                <custom name="opencounter" type="tracking">
+              </div>
+            </td>
+          </tr>
+          <!-- END Header  -->
+
+          <tr>
+            <td align="center">
+
+              <!-- Begin Attrition -->
+              %%=ContentBlockByName("Shared Content\GPUSO\Projects\DailyEPNYFile\contents\GFSUS_Attrition_Banner")=%%
+              <!-- End Attrition -->
+            </td>
+          </tr>
+
+          <!-- START Body -->
+
+
+          
+
+          <tr>
+            <td style="padding-bottom: 44px" class="between">
+              %%[ set @moduleNum = "1" ]%%
+              %%= ContentBlockByName("Content Builder\Campaigns\2023\03 March\20230317\Contents\20230317_GFSUS_CST") =%%
+            </td>
+          </tr>
+
+
+          <!-- END Body -->
+          <tr>
+            <td>
+              <!-- START: Store Closure -->
+              %%=ContentBlockByKey("GFSUS_Store_Closing_Banner") =%%
+              <!-- END: Store Closure -->
+            </td>
+          </tr>
+
+          <!-- START footer -->
+
+          <tr>
+            <td align="center">
+              %%= ContentBlockByKey("20230228_GFSUS_Footer") =%%
+            </td>
+          </tr>
+
+          <!-- END footer -->
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Inline CSS Override -->
+  <!-- End container and wrapper tables -->
+</body>
+</html>
