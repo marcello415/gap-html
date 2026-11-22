@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>A/B Test: One Offer, Two Versions | Marcello Miranda</title>
+<meta name="description" content="A Gap Factory email A/B test rebuilt from the original assets: two subject lines, two preheaders and two hero images for the same offer.">
+<link rel="icon" type="image/svg+xml" href="https://marcello415.github.io/portfolio-html/images/icon-email.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&amp;family=Space+Mono:wght@400;700&amp;display=swap">
+<link rel="stylesheet" href="https://marcello415.github.io/portfolio-html/css/story.css?v=1">
+<style>
+.inbox{background:#fff;border:1.5px solid var(--ink);box-shadow:5px 5px 0 var(--ink)}
+.inbox .bar{display:flex;justify-content:space-between;padding:8px 14px;border-bottom:1.5px solid var(--ink);font:700 11px 'Space Mono',monospace;letter-spacing:.08em;text-transform:uppercase}
+.msg{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:4px 12px;padding:14px;border-bottom:1px solid var(--line);font-family:-apple-system,'Helvetica Neue',Arial,sans-serif}
+.msg:last-child{border-bottom:0}
+.msg .tag{grid-row:span 3;align-self:start;width:28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;font:700 13px/28px 'Space Mono',monospace;text-align:center}
+.msg .tag.b{background:var(--accent)}
+.msg .from{font-weight:700;font-size:15px}
+.msg .time{font-size:12px;color:var(--muted)}
+.msg .subj{grid-column:2 / 4;font-size:15px;font-weight:600}
+.msg .pre{grid-column:2 / 4;font-size:14px;color:#6e6e73;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:8px}
+.pair h3{margin:0 0 8px;font-size:18px}
+.pair h3 span{font:700 11px 'Space Mono',monospace;letter-spacing:.1em;color:var(--accent);margin-right:8px}
+.frame-wrap{border:1.5px solid var(--ink);box-shadow:5px 5px 0 var(--ink);background:#fff;height:900px;overflow:hidden;position:relative}
+.frame-wrap iframe{border:0;width:640px;height:1200px;transform:scale(.75);transform-origin:0 0;position:absolute;left:50%;margin-left:-240px}
+.pair .open{display:inline-block;margin-top:12px;font-weight:700;font-size:14px}
+.section{padding:40px 0;border-top:1px solid var(--line)}
+.section h2{margin:6px 0 10px;font-size:28px;letter-spacing:-.02em}
+.section > p{max-width:720px;color:#3A3833;font-size:16px;margin:0 0 16px}
+.two{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:32px;align-items:start}
+@media (max-width:820px){.two,.pair{grid-template-columns:1fr}}
+@media (max-width:540px){.frame-wrap{height:620px}.frame-wrap iframe{transform:scale(.5);margin-left:-160px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <a class="back" href="https://marcello415.github.io/portfolio-html/email/work/ampscript.html">&larr; AMPscript &amp; Personalization case study</a>
+  <h1>A/B test: one offer, two versions</h1>
+  <p class="lead">A Gap Factory A/B test rebuilt from the original June 2023 assets. The offer is the same in both versions. What changes is the subject line, the preheader and the hero image.</p>
+  <dl class="ctx">
+    <div><dt>Where</dt><dd>Gap Inc, as Email Developer</dd></div>
+    <div><dt>Offer</dt><dd>Up to 75% off, free shipping with code GFSHIP</dd></div>
+    <div><dt>Testing</dt><dd>Subject line, preheader, hero image</dd></div>
+    <div><dt>Tools</dt><dd>Salesforce Marketing Cloud, AMPscript</dd></div>
+  </dl>
+  <p class="note">Both versions use the original Gap Factory images and footer. The test setup is an example. Results aren&rsquo;t shown.</p>
+</header>
+
+<section class="section">
+  <div class="step">In the inbox</div>
+  <h2>What each customer sees first</h2>
+  <p>The subject line and preheader decide whether the email gets opened. Version B uses AMPscript to put the customer&rsquo;s first name in the subject line, with a fallback when the name is missing.</p>
+  <div class="two">
+    <div class="inbox" aria-label="Inbox preview">
+      <div class="bar"><span>Inbox</span><span>preview</span></div>
+      <div class="msg"><span class="tag">A</span><span class="from">Gap Factory</span><span class="time">9:02 AM</span><span class="subj">Up to 75% off + free shipping</span><span class="pre">Styles up to 75% off, plus free shipping with code GFSHIP.</span></div>
+      <div class="msg"><span class="tag b">B</span><span class="from">Gap Factory</span><span class="time">9:02 AM</span><span class="subj">Marcello, 1000s of styles are up to 75% off</span><span class="pre">Free shipping with code GFSHIP. Exclusions apply.</span></div>
+      <div class="msg"><span class="tag b">B</span><span class="from">Gap Factory</span><span class="time">9:02 AM</span><span class="subj">1000s of styles are up to 75% off</span><span class="pre">Free shipping with code GFSHIP. Exclusions apply.</span></div>
+    </div>
+    <div>
+      <div class="ex"><div class="ex-h"><span>What changes</span><span>A vs B</span></div><div class="ex-b">
+        <table class="specs"><thead><tr><th scope="col"></th><th scope="col">Version A</th><th scope="col">Version B</th></tr></thead><tbody>
+          <tr><td><b>Subject line</b></td><td>The offer</td><td>Personalized with first name</td></tr>
+          <tr><td><b>Preheader</b></td><td>Repeats the offer and code</td><td>Code and exclusions</td></tr>
+          <tr><td><b>Hero image</b></td><td>&ldquo;Up to 75% off + free shipping&rdquo;</td><td>&ldquo;Up to 75% off, 1000s of styles&rdquo;</td></tr>
+          <tr><td><b>Everything else</b></td><td colspan="2">Same offer, nav, copy, button, links and footer</td></tr>
+        </tbody></table>
+      </div></div>
+      <p class="cap" style="margin-top:12px">Last row of the inbox: Version B for a customer with no first name on file.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="step">The emails</div>
+  <h2>Version A and Version B</h2>
+  <p>Both emails are built from the same template. Only the hero image and the preheader text differ in the body.</p>
+  <div class="pair">
+    <div><h3><span>A</span>Free shipping hero</h3><div class="frame-wrap"><iframe src="version-a.html" title="Version A email"></iframe></div><a class="open" href="version-a.html">Open Version A &rarr;</a></div>
+    <div><h3><span>B</span>1000s of styles hero</h3><div class="frame-wrap"><iframe src="version-b.html" title="Version B email"></iframe></div><a class="open" href="version-b.html">Open Version B &rarr;</a></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="step">The setup</div>
+  <h2>How the test runs</h2>
+  <p>Part of the audience gets each version. Opens show which subject line and preheader worked; clicks show which hero image worked. Every version is checked on a test send before the split goes out.</p>
+  <ol class="flow">
+    <li><span>01</span><b>Build</b>One template, two versions</li>
+    <li><span>02</span><b>Split</b>Test audience divided evenly between A and B</li>
+    <li><span>03</span><b>Measure</b>Opens for subject and preheader, clicks for the image</li>
+    <li><span>04</span><b>Send</b>The winning version goes to everyone else</li>
+  </ol>
+</section>
+
+<section class="carry">
+  <h2>Where it carries over</h2>
+  <p>Any email program tests the same way: change one or two things, keep the rest identical, split the audience and let opens and clicks decide. Personalizing the subject line with a safe fallback works with any customer data.</p>
+  <div class="links"><a class="dark" href="https://marcello415.github.io/portfolio-html/email/work/ampscript.html">Read the case study</a><a href="version-a.html">Version A</a><a href="version-b.html">Version B</a></div>
+</section>
+
+</div>
+</body>
+</html>
